@@ -53,6 +53,7 @@ class PatchEmbedding(nn.Module):
 
     def forward(self, x):
         # do patching
+        x = x.permute(0, 2, 1).contiguous()
         n_vars = x.shape[1]
         x = self.padding_patch_layer(x)
         x = x.unfold(dimension=-1, size=self.patch_len, step=self.stride)

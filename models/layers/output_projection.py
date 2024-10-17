@@ -1,12 +1,11 @@
 import torch
+import os
 import json
 import torch.nn as nn
 
-configs = json.load(open("configs.json"))
-
 
 class FlattenHead(nn.Module):
-    def __init__(self):
+    def __init__(self, configs):
         super(FlattenHead, self).__init__()
         self.patch_nums = int((configs["seq_len"] - configs["stride"]) / configs["stride"] + 2)
         self.head_nf = configs["d_ff"] * self.patch_nums
@@ -21,4 +20,5 @@ class FlattenHead(nn.Module):
         x = self.flatten(x)
         x = self.linear(x)
         x = self.dropout(x)
+        x = x.permute(0, 2, 1).contiguous()
         return x
